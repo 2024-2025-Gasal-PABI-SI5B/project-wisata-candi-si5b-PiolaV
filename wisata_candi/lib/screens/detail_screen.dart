@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:candi_1/models/candi.dart';
+import 'package:wisata_candi/models/candi.dart';
 
 class DetailScreen extends StatelessWidget {
   final Candi candi;
@@ -12,9 +12,9 @@ class DetailScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ClipRRect
-            (borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
               candi.imageAsset,
               width: double.infinity,
               height: 300,
