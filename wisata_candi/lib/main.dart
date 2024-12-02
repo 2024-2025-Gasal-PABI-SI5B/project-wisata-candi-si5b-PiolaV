@@ -32,8 +32,8 @@ class MainApp extends StatelessWidget {
 
       ), // themaDATA 
       //home: DetailScreen(candi: candiList[0]),
-      home: ProfilScreen(),
-      //home: SignInScreen(),
+      //home: ProfilScreen(),
+      home: SignInScreen(),
       );
     
   }
