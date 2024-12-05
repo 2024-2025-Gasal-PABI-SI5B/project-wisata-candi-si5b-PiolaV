@@ -11,7 +11,7 @@ class SearchScreen extends StatelessWidget {
       ),
       body: const Padding(
         padding: EdgeInsets.all(16.0),
-        child: Text('ini adalah halaman search'),
+        child: Text('ini adalah halaman search uuuu'),
         ),
     );
   }
