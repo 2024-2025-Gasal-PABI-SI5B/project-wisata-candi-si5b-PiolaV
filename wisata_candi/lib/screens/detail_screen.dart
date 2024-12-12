@@ -1,12 +1,63 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wisata_candi/models/candi.dart';
 
-class DetailScreen extends StatelessWidget{
+class DetailScreen extends StatefulWidget{
   final Candi candi;
 
   const DetailScreen ({super.key, required this.candi});
-  
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  bool _isFavorite = false;
+
+  Future<void> _loadFavoriteStatus() async {
+    SharedPreferences prefs =await SharedPreferences.getInstance();
+    List<String> favoriteCandi = prefs.getStringList('favoriteCandi') ?? [];
+    setState(() {
+      _isFavorite = favoriteCandi.contains(widget.candi.name);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _toggleFavorite() async{
+    SharedPreferences prefs =await SharedPreferences.getInstance();
+    List<String> favoriteCandi = prefs.getStringList('favoriteCandi') ?? [];
+
+    setState(() {
+      if(_isFavorite){
+        // proses un favorite 
+        favoriteCandi.remove(widget.candi.name);
+        _isFavorite = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${widget.candi.name} remove from favorite'))
+
+        );
+      }
+      else{
+         favoriteCandi.add(widget.candi.name);
+        _isFavorite = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${widget.candi.name} added to from favorite'))
+
+        );
+
+      }
+    });
+    await prefs.setStringList('favoriteCandi', favoriteCandi);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +73,7 @@ class DetailScreen extends StatelessWidget{
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
-                        candi.imageAsset,
+                        widget.candi.imageAsset,
                         width: double.infinity,
                         height: 300,
                         fit: BoxFit.cover,
@@ -53,7 +104,7 @@ class DetailScreen extends StatelessWidget{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Info Atas
+                    //Info Atas / judul
                     const SizedBox(
                       height: 16,
                     ),
@@ -61,7 +112,7 @@ class DetailScreen extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          candi.name,
+                          widget.candi.name,
                           style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -90,7 +141,7 @@ class DetailScreen extends StatelessWidget{
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Text(': ${candi.built}')
+                        Text(': ${widget.candi.built}')
                       ],
                     ),
                     Row(
@@ -109,12 +160,13 @@ class DetailScreen extends StatelessWidget{
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Text(': ${candi.type}')
+                        Text(': ${widget.candi.type}')
                       ],
                     ),
                     Row(
                       children: [
                         const Icon(
+                          
                           Icons.place, 
                           color: Colors.red,
                         ),
@@ -128,7 +180,7 @@ class DetailScreen extends StatelessWidget{
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Text(': ${candi.location}')
+                        Text(': ${widget.candi.location}')
                       ],
                     ),
                     //pemisah
@@ -151,7 +203,7 @@ class DetailScreen extends StatelessWidget{
                     ),
                     const SizedBox(height: 16,),
                     Text(
-                      candi.description,
+                      widget.candi.description,
                     )
                   ],
                 )
@@ -185,7 +237,7 @@ class DetailScreen extends StatelessWidget{
                       height: 100,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: candi.imageUrls.length,
+                        itemCount: widget.candi.imageUrls.length,
                         itemBuilder: (context, index){
                           return Padding(
                             padding: const EdgeInsets.only(right: 8),
@@ -202,7 +254,7 @@ class DetailScreen extends StatelessWidget{
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: CachedNetworkImage(
-                                    imageUrl: candi.imageUrls[index],
+                                    imageUrl: widget.candi.imageUrls[index],
                                     height: 120,
                                     width: 120,
                                     fit: BoxFit.cover,
@@ -237,6 +289,4 @@ class DetailScreen extends StatelessWidget{
       ),
     );
   }
-
-  
 }
